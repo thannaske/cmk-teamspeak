@@ -1,0 +1,4 @@
+[serverquery]
+address = "127.0.0.1"
+user = serveradmin
+password = pass
