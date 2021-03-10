@@ -38,11 +38,13 @@ def parse_teamspeak3(info):
             parsed[line[0][:-1]] = " ".join(line[1:])
     return parsed
 
+
 def inventory_teamspeak3(parsed):
     if parsed.get(u'Version'):
         yield u'Global', {}
-    for port, vs in parsed['VirtualServer'].iteritems():
+    for port, vs in parsed['VirtualServer'].items():
         yield port, {u'status': vs[u'status'], u'autostart': vs[u'autostart']}
+
 
 def check_teamspeak3(item, params, parsed):
     if 'ConfigError' in parsed:
@@ -74,18 +76,19 @@ def check_teamspeak3(item, params, parsed):
         now = time.time()
         in_rate = get_rate('teamspeak3.%d.if_in_octets' % item, now, vs[u'ingress'])
         out_rate = get_rate('teamspeak3.%d.if_out_octets' % item, now, vs[u'egress'])
-        perfdata = [ (u'current_users', vs[u'clientsonline'], None, None, 0, vs[u'clientsmax']),
-                     (u'channels', vs[u'channels']),
-                     (u'if_in_octets', in_rate),
-                     (u'if_out_octets', out_rate) ]
+        perfdata = [(u'current_users', vs[u'clientsonline'], None, None, 0, vs[u'clientsmax']),
+                    (u'channels', vs[u'channels']),
+                    (u'if_in_octets', in_rate),
+                    (u'if_out_octets', out_rate)]
         return state, text, perfdata
     if item == u'Global':
         return 0, "Platform: %s, Version: %s %s" % (parsed[u'Platform'], parsed[u'Version'], parsed[u'Build'])
 
+
 check_info['Teamspeak3'] = {
-    'parse_function':      parse_teamspeak3,
-    'inventory_function':  inventory_teamspeak3,
-    'check_function':      check_teamspeak3,
+    'parse_function': parse_teamspeak3,
+    'inventory_function': inventory_teamspeak3,
+    'check_function': check_teamspeak3,
     'service_description': "Teamspeak3 %s",
-    'has_perfdata':        True,
+    'has_perfdata': True,
 }
